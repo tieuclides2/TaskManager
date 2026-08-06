@@ -1,0 +1,36 @@
+import SidebarButton from './SidebarButton'
+
+import HomeIcon from '../assets/icons/home.svg?react'
+import TaskIcon from '../assets/icons/tasks.svg?react'
+
+const Sidebar = () => {
+  return (
+    <div className="h-screen w-64 bg-white">
+      <div className="px-8 py-6">
+        <h1 className="mb-4 text-xl font-semibold text-[#00ADB5]">
+          Task Manager
+        </h1>
+        <p>
+          Um simples{' '}
+          <span className="text-[#00ADB5]">organizador de tarefas</span>
+        </p>
+      </div>
+      {/* botoes */}
+      <div className="flex flex-col gap-2 p-2">
+        <SidebarButton variant="unselected">
+          <div>
+            <HomeIcon />
+          </div>
+          Início
+        </SidebarButton>
+        <SidebarButton variant="selected">
+          <TaskIcon />
+          Minhas Tarefas
+        </SidebarButton>
+        <div></div>
+      </div>
+    </div>
+  )
+}
+
+export default Sidebar
