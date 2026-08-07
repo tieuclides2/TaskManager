@@ -12,6 +12,7 @@ import TASKS from '../constants/tasks'
 //components
 import TasksSeparator from './TasksSeparator'
 import TaskItem from './TaskItem'
+import { toast } from 'sonner'
 
 const Tasks = () => {
   const [tasks, setTasks] = useState(TASKS)
@@ -19,6 +20,13 @@ const Tasks = () => {
   const morningTasks = tasks.filter((tasks) => tasks.time === 'morning')
   const afternoonTasks = tasks.filter((tasks) => tasks.time === 'afternoon')
   const eveningTasks = tasks.filter((tasks) => tasks.time === 'evening')
+
+  const handleTaskDeleteClick = (taskId) => {
+    const newTask = tasks.filter((task) => task.id !== taskId)
+
+    setTasks(newTask)
+    toast.success('Tarefa deletada com sucesso!')
+  }
 
   const handleTaskCheckboxClick = (taskId) => {
     const newTasks = tasks.map((task) => {
@@ -28,14 +36,17 @@ const Tasks = () => {
 
       //essa tarefa eu preciso atualizar o status
       if (task.status === 'not_started') {
+        toast.success('Tarefa iniciada com sucesso')
         return { ...task, status: 'in_progress' }
       }
 
       if (task.status === 'in_progress') {
+        toast.success('Tarefa concluída com sucesso')
         return { ...task, status: 'done' }
       }
 
       if (task.status === 'done') {
+        toast.success('Tarefa reiniciada com sucesso')
         return { ...task, status: 'not_started' }
       }
 
@@ -77,7 +88,8 @@ const Tasks = () => {
             <TaskItem
               key={task.id}
               task={task}
-              handleTaskCheckboxClick={handleTaskCheckboxClick}
+              handleCheckboxClick={handleTaskCheckboxClick}
+              handleDeleteClick={handleTaskDeleteClick}
             />
           ))}
         </div>
@@ -89,7 +101,8 @@ const Tasks = () => {
             <TaskItem
               key={task.id}
               task={task}
-              handleTaskCheckboxClick={handleTaskCheckboxClick}
+              handleCheckboxClick={handleTaskCheckboxClick}
+              handleDeleteClick={handleTaskDeleteClick}
             />
           ))}
         </div>
@@ -101,7 +114,8 @@ const Tasks = () => {
             <TaskItem
               key={task.id}
               task={task}
-              handleTaskCheckboxClick={handleTaskCheckboxClick}
+              handleCheckboxClick={handleTaskCheckboxClick}
+              handleDeleteClick={handleTaskDeleteClick}
             />
           ))}
         </div>
