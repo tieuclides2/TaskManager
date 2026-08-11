@@ -34,7 +34,7 @@ const TaskItem = ({ task, handleCheckboxClick, handleDeleteClick }) => {
             checked={task.status === 'done'}
             className="absolute h-full w-full cursor-pointer opacity-0"
             //Depois troca para onchange aqui
-            onClick={() => handleCheckboxClick(task.id)}
+            onChange={() => handleCheckboxClick(task.id)}
           />
           {task.status === 'done' && <CheckIcon />}
           {task.status === 'in_progress' && (
