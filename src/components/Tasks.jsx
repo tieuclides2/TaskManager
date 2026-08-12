@@ -17,7 +17,7 @@ import AddTaskDialog from './AddTasksDialog'
 
 const Tasks = () => {
   const [tasks, setTasks] = useState(TASKS)
-  const [addTaskDialogIsOpen, setAddTaskDialogIsOpen] = useState(false)
+  const [AddTaskDialogIsOpen, setAddTaskDialogIsOpen] = useState(false)
 
   const morningTasks = tasks.filter((tasks) => tasks.time === 'morning')
   const afternoonTasks = tasks.filter((tasks) => tasks.time === 'afternoon')
@@ -79,7 +79,11 @@ const Tasks = () => {
             Nova Tarefa
           </Button>
 
-          <AddTaskDialog isOpen={addTaskDialogIsOpen} />
+          {/* modal de nova tarefa */}
+          <AddTaskDialog
+            isOpen={AddTaskDialogIsOpen}
+            handleCloseDialog={() => setAddTaskDialogIsOpen(false)}
+          />
         </div>
       </div>
 
