@@ -1,17 +1,46 @@
 import Input from './Input'
 import { createPortal } from 'react-dom'
 import { CSSTransition } from 'react-transition-group'
+import { v4 } from 'uuid'
 
 import './AddTaskDialog.css'
 
 import Button from './Button'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TimeSelect from './TimeSelect'
 
-const AddTaskDialog = ({ isOpen, handleCloseDialog }) => {
+const AddTaskDialog = ({ isOpen, handleCloseDialog, handleSubmit }) => {
+  const [title, setTitle] = useState('')
+  const [time, setTime] = useState('morning')
+  const [description, setDescription] = useState('')
+
   const nodeRef = useRef()
 
   // if (!isOpen) return null //faz com que o dialog não aparece caso children seja fale
+
+  // Limpar inputs
+  useEffect(() => {
+    if (!isOpen) {
+      setTitle('')
+      setTime('morning')
+      setDescription('')
+    }
+  }, [isOpen])
+
+  const handleSaveClick = () => {
+    if (!title.trim || !time || !description.trim) {
+      alert('Todos os campos devem ser preenchidos!')
+    }
+
+    handleSubmit({
+      id: v4(),
+      title,
+      time,
+      description,
+      status: 'not_started',
+    })
+    handleCloseDialog()
+  }
 
   return (
     // transicao para o modal
@@ -42,14 +71,21 @@ const AddTaskDialog = ({ isOpen, handleCloseDialog }) => {
                   id="title"
                   label="Título"
                   placeholder="Título da tarefa"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
                 />
 
-                <TimeSelect />
+                <TimeSelect
+                  onChange={(event) => setTime(event.target.value)}
+                  value={time}
+                />
 
                 <Input
                   id="description"
                   label="Descrição"
                   placeholder="Descreva a tarefa"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
                 />
               </div>
               {/* Botoes do modal*/}
@@ -62,7 +98,11 @@ const AddTaskDialog = ({ isOpen, handleCloseDialog }) => {
                 >
                   Cancelar
                 </Button>
-                <Button size="large" className="w-full">
+                <Button
+                  size="large"
+                  className="w-full"
+                  onClick={handleSaveClick}
+                >
                   Salvar
                 </Button>
               </div>

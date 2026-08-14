@@ -57,7 +57,11 @@ const Tasks = () => {
 
     setTasks(newTasks)
   }
-
+  // Funçao para adicionar uma tarefa
+  const handleTaskAddSubmit = (task) => {
+    setTasks([...tasks, task])
+    toast.success('Tarefa adicionada com sucesso!')
+  }
   return (
     <div className="w-full space-y-6 px-8 py-16">
       {/* Títulos e Botões */}
@@ -83,6 +87,7 @@ const Tasks = () => {
           <AddTaskDialog
             isOpen={AddTaskDialogIsOpen}
             handleCloseDialog={() => setAddTaskDialogIsOpen(false)}
+            handleSubmit={handleTaskAddSubmit}
           />
         </div>
       </div>
