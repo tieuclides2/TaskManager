@@ -6,30 +6,26 @@ import { v4 } from 'uuid'
 import './AddTaskDialog.css'
 
 import Button from './Button'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import TimeSelect from './TimeSelect'
 
 const AddTaskDialog = ({ isOpen, handleCloseDialog, handleSubmit }) => {
-  const [title, setTitle] = useState('')
-  const [time, setTime] = useState('morning')
-  const [description, setDescription] = useState('')
   const [errors, setErrors] = useState([])
 
   const nodeRef = useRef()
 
-  // if (!isOpen) return null //faz com que o dialog não aparece caso children seja fale
+  const titleRef = useRef()
+  const descriptionRef = useRef()
+  const timeRef = useRef()
 
-  // Limpar inputs
-  useEffect(() => {
-    if (!isOpen) {
-      setTitle('')
-      setTime('morning')
-      setDescription('')
-    }
-  }, [isOpen])
+  // if (!isOpen) return null //faz com que o dialog não aparece caso children seja fale
 
   const handleSaveClick = () => {
     const newErros = []
+
+    const title = titleRef.current.value
+    const description = descriptionRef.current.value
+    const time = timeRef.current.value
 
     if (!title.trim()) {
       newErros.push({
@@ -63,7 +59,7 @@ const AddTaskDialog = ({ isOpen, handleCloseDialog, handleSubmit }) => {
 
     handleSubmit({
       id: v4(),
-      title,
+      title: titleRef.current.value,
       time,
       description,
       status: 'not_started',
@@ -106,24 +102,18 @@ const AddTaskDialog = ({ isOpen, handleCloseDialog, handleSubmit }) => {
                   id="title"
                   label="Título"
                   placeholder="Título da tarefa"
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
                   errorMessage={titleError?.message}
+                  ref={titleRef}
                 />
 
-                <TimeSelect
-                  onChange={(event) => setTime(event.target.value)}
-                  value={time}
-                  errorMessage={timeError?.message}
-                />
+                <TimeSelect errorMessage={timeError?.message} ref={timeRef} />
 
                 <Input
                   id="description"
                   label="Descrição"
                   placeholder="Descreva a tarefa"
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
                   errorMessage={descriptionError?.message}
+                  ref={descriptionRef}
                 />
               </div>
               {/* Botoes do modal*/}
