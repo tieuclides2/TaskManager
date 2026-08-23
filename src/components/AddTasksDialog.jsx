@@ -90,10 +90,10 @@ const AddTaskDialog = ({ isOpen, handleCloseDialog, handleSubmit }) => {
           >
             {/* dialog */}
             <div className="rounded-xl bg-white p-5 text-center shadow">
-              <h2 className="text-xl font-semibold text-[#35383E]">
+              <h2 className="text-brand-dark-blue text-xl font-semibold">
                 Nova Tarefa
               </h2>
-              <p className="mb-4 mt-1 text-[#9A9C9F]">
+              <p className="text-brand-text-gray mb-4 mt-1">
                 Insira as informação aqui
               </p>
 
