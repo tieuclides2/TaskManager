@@ -67,14 +67,14 @@ const Tasks = () => {
       {/* Títulos e Botões */}
       <div className="flex w-full justify-between">
         <div>
-          <span className="text-brand-primary text-xs font-semibold">
+          <span className="text-xs font-semibold text-brand-primary">
             Minhas tarefas
           </span>
           <h2 className="text-xl font-semibold">Minhas tarefas</h2>
         </div>
         {/* Botões */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost">
+          <Button color="ghost">
             Limpar Tarefa
             <TrashIcon />
           </Button>

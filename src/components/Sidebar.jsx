@@ -7,7 +7,7 @@ const Sidebar = () => {
   return (
     <div className="h-screen w-64 bg-white">
       <div className="px-8 py-6">
-        <h1 className="text-brand-primary mb-4 text-xl font-semibold">
+        <h1 className="mb-4 text-xl font-semibold text-brand-primary">
           Task Manager
         </h1>
         <p>
@@ -17,13 +17,13 @@ const Sidebar = () => {
       </div>
       {/* botoes */}
       <div className="flex flex-col gap-2 p-2">
-        <SidebarButton variant="unselected">
+        <SidebarButton color="unselected">
           <div>
             <HomeIcon />
           </div>
           Início
         </SidebarButton>
-        <SidebarButton variant="selected">
+        <SidebarButton color="selected">
           <TaskIcon />
           Minhas Tarefas
         </SidebarButton>
