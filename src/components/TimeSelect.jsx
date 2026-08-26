@@ -1,6 +1,7 @@
 import { forwardRef } from 'react'
 import InputLabel from './InputLabel'
 import InputErrorMessage from './InputErrorMessage'
+import PropTypes from 'prop-types'
 
 const TimeSelect = forwardRef((props, ref) => {
   return (
@@ -9,7 +10,7 @@ const TimeSelect = forwardRef((props, ref) => {
 
       <select
         id="time"
-        className="outline-brand-primary placeholder:text-brand-text-gray border-brand-border rounded-lg border border-solid px-4 py-3 placeholder:text-sm"
+        className="rounded-lg border border-solid border-brand-border px-4 py-3 outline-brand-primary placeholder:text-sm placeholder:text-brand-text-gray"
         ref={ref}
         {...props}
       >
@@ -25,5 +26,8 @@ const TimeSelect = forwardRef((props, ref) => {
 })
 
 TimeSelect.displayName = 'TimeSelec'
+TimeSelect.propTypes = {
+  errorMessage: PropTypes.string,
+}
 
 export default TimeSelect
