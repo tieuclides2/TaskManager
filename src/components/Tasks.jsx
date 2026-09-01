@@ -6,8 +6,7 @@ import TrashIcon from '../assets/icons/trash.svg?react'
 import SunIcon from '../assets/icons/sun.svg?react'
 import CloudSunIcon from '../assets/icons/cloud-sun.svg?react'
 import MoonIcon from '../assets/icons/moon.svg?react'
-import { useState } from 'react'
-import TASKS from '../constants/tasks'
+import { useEffect, useState } from 'react'
 
 //components
 import TasksSeparator from './TasksSeparator'
@@ -16,14 +15,38 @@ import { toast } from 'sonner'
 import AddTaskDialog from './AddTasksDialog'
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState(TASKS)
+  const [tasks, setTasks] = useState([])
   const [AddTaskDialogIsOpen, setAddTaskDialogIsOpen] = useState(false)
+
+  useEffect(() => {
+    // preciso pegar os dados da APi
+    const fetchTasks = async () => {
+      const response = await fetch('http://localhost:3000/tasks', {
+        method: 'GET',
+      })
+      const tasks = await response.json()
+      //após pegar os dados da API, atualizar o state 'Tasks'
+      setTasks(tasks)
+    }
+
+    fetchTasks()
+  }, [])
 
   const morningTasks = tasks.filter((tasks) => tasks.time === 'morning')
   const afternoonTasks = tasks.filter((tasks) => tasks.time === 'afternoon')
   const eveningTasks = tasks.filter((tasks) => tasks.time === 'evening')
 
-  const handleTaskDeleteClick = (taskId) => {
+  const handleTaskDeleteClick = async (taskId) => {
+    //chamar api para deletar a tarefa
+    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+      method: 'DELETE',
+    })
+
+    if (!response.ok) {
+      toast.error('Error ao deletar a tarefa.')
+    }
+
+    //após chamar a api, atualizar o state
     const newTask = tasks.filter((task) => task.id !== taskId)
 
     setTasks(newTask)
@@ -58,7 +81,17 @@ const Tasks = () => {
     setTasks(newTasks)
   }
   // Funçao para adicionar uma tarefa
-  const handleTaskAddSubmit = (task) => {
+  const handleTaskAddSubmit = async (task) => {
+    //chamar api para atualizar a tarefa
+    const response = await fetch('http://localhost:3000/tasks', {
+      method: 'POST',
+      body: JSON.stringify(task),
+    })
+
+    if (!response.ok) {
+      return toast.error('Error ao inserir tarefa, tente novamente mais tarde.')
+    }
+
     setTasks([...tasks, task])
     toast.success('Tarefa adicionada com sucesso!')
   }
