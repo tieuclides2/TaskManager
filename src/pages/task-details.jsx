@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import Sidebar from '../components/Sidebar'
 
 const TaskDetailsPage = () => {
   const { taskId } = useParams()
@@ -18,9 +19,17 @@ const TaskDetailsPage = () => {
   console.log(task)
 
   return (
-    <div>
-      <h1>{task?.title}</h1>
-      <p>{task?.description}</p>
+    <div className="flex">
+      <Sidebar />
+      <div>
+        {/* Barra do top */}
+        <div className="flex w-full justify-between">
+          {/* parte da esquerda */}
+          <div className="flex items-center gap-1">
+            <span>Minhas tarefas</span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

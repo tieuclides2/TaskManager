@@ -8,7 +8,8 @@ import './AddTaskDialog.css'
 import Button from './Button'
 import { useRef, useState } from 'react'
 import TimeSelect from './TimeSelect'
-import LoaderIcon from '../assets/icons/loader.svg?react'
+
+import { LoaderIcon } from '../assets/icons/index'
 import { v4 } from 'uuid'
 
 const AddTaskDialog = ({

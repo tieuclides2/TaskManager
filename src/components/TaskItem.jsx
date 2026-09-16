@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
 
-import CheckIcon from '../assets/icons/check.svg?react'
-import LoaderIcon from '../assets/icons/loader.svg?react'
-import DetailsIcon from '../assets/icons/details.svg?react'
-import TrashIcon from '../assets/icons/trash.svg?react'
+import {
+  CheckIcon,
+  LoaderIcon,
+  DetailsIcon,
+  TrashIcon,
+} from '../assets/icons/index'
 
 //Components
 import Button from '../components/Button'
