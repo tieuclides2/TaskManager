@@ -1,13 +1,6 @@
 {
   "tasks": [
     {
-      "id": "2",
-      "title": "Ler livro",
-      "description": "Ler A arte da guerra",
-      "time": "morning",
-      "status": "done"
-    },
-    {
       "id": "4",
       "title": "Fazer compras",
       "description": "Ingredientas para o bolo",
