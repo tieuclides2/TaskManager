@@ -16,8 +16,6 @@ import { useForm } from 'react-hook-form'
 const TaskDetailsPage = () => {
   const { taskId } = useParams()
   const [task, setTask] = useState()
-
-  // const [errors, setErrors] = useState([])
   const {
     register,
     formState: { errors, isSubmitting },
