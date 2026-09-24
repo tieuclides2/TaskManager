@@ -25,9 +25,11 @@ const AddTaskDialog = ({
     handleSubmit,
     reset,
   } = useForm({
-    title: '',
-    time: 'morning',
-    description: '',
+    defaultValues: {
+      title: '',
+      time: 'morning',
+      description: '',
+    },
   })
 
   const nodeRef = useRef()
@@ -55,6 +57,15 @@ const AddTaskDialog = ({
       time: 'morning',
       description: '',
     })
+  }
+
+  const handleCancelClick = () => {
+    reset({
+      title: '',
+      time: 'morning',
+      description: '',
+    })
+    handleCloseDialog()
   }
 
   return (
@@ -128,7 +139,7 @@ const AddTaskDialog = ({
                     size="large"
                     className="w-full text-center"
                     color="secondary"
-                    onClick={() => handleCloseDialog()}
+                    onClick={handleCancelClick}
                     type="button"
                   >
                     Cancelar
