@@ -11,92 +11,95 @@ import {
 } from '../assets/icons'
 import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const TaskDetailsPage = () => {
+  const queryClient = useQueryClient()
+  const { taskId } = useParams()
+  const navigate = useNavigate()
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm()
+
+  const { mutate: updateTask, isPending: updatedTaskIsLoading } = useMutation({
+    mutationKey: ['updateTask', taskId],
+    mutationFn: async (data) => {
+      //Chamo api aqui
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          title: data.title.trim(),
+          time: data.time,
+          description: data.description.trim(),
+        }),
+      })
+      if (!response.ok) {
+        throw new Error()
+      }
+      const updatedTask = await response.json()
+      queryClient.setQueryData('tasks', (oldTasks) => {
+        return oldTasks.map((oldTask) => {
+          if (oldTask.id === taskId) {
+            return updatedTask
+          }
+          return oldTask
+        })
+      })
+    },
+  })
+
+  const { mutate: deleteTask, isPending: deleteTaskIsLoading } = useMutation({
+    mutationKey: ['deleteTask', taskId],
+    mutationFn: async () => {
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) {
+        throw new Error()
+      }
+
+      const deletedTask = await response.json()
+      queryClient.setQueryData('tasks', (oldTasks) => {
+        return oldTasks.filter((oldTask) => oldTask.id !== deletedTask.id)
+      })
+    },
+  })
+
   const { data: task } = useQuery({
-    queryKey: 'taskDetail',
+    queryKey: ['task', taskId],
     queryFn: async () => {
       const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
         method: 'GET',
       })
-      const task = response.json()
-      return task
+      const data = await response.json()
+      reset(data)
     },
   })
 
-  const { mutate } = useMutation({
-    mutationKey: 'taskDetailAtualizar',
-    mutationFn: async (updatedTask) => {
-      const response = await fetch(
-        `http://localhost:3000/tasks/${updatedTask.id}`,
-        {
-          method: 'PATCH',
-          body: JSON.stringify(updatedTask),
-        }
-      )
-      response.json()
-    },
-  })
-
-  const { mutate: mutateDelete } = useMutation({
-    mutationKey: 'taskDetailDeletar',
-    mutationFn: async () => {
-      const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
-        method: 'DELETE',
-      })
-      return response.json()
-    },
-  })
-
-  const { taskId } = useParams() //pego a id da tarefa pela url
-  const {
-    register,
-    formState: { errors, isSubmitting },
-    handleSubmit,
-  } = useForm({
-    values: {
-      title: task?.title,
-      time: task?.time,
-      description: task?.description,
-    },
-  })
-
-  const navigate = useNavigate()
   const handleBackClick = () => {
     navigate(-1)
   }
 
   const handleSaveClick = async (data) => {
-    //Chamo api aqui
-    const updatedTask = {
-      ...task,
-      title: data.title.trim(),
-      time: data.time,
-      description: data.description.trim(),
-    }
-
-    mutate(updatedTask, {
-      onSuccess: () => {
-        toast.success('Tarefa atualizada com sucesso!')
-      },
-      onError: () => {
-        toast.error('Error ao atualizar a tarefa!')
-      },
+    updateTask(data, {
+      onSuccess: () => toast.success('Tarefa atualizada com sucesso!'),
+      onError: () => toast.error('Error ao atualiza a tarefa.'),
     })
   }
 
   const handleDeleteTask = async () => {
-    mutateDelete(undefined, {
+    deleteTask(undefined, {
       onSuccess: () => {
         toast.success('Tarefa deletada com sucesso!')
+        navigate(-1)
       },
       onError: () => {
-        toast.error('Error ao deletar tarefa!')
+        toast.error('Error ao deletar tarefa')
       },
     })
-
-    navigate(-1)
   }
 
   return (
@@ -187,9 +190,11 @@ const TaskDetailsPage = () => {
               size="large"
               color="primary"
               type="submit"
-              disabled={isSubmitting}
+              disabled={updatedTaskIsLoading || deleteTaskIsLoading}
             >
-              {isSubmitting && <LoaderIcon className="animate-spin" />}
+              {(updatedTaskIsLoading || deleteTaskIsLoading) && (
+                <LoaderIcon className="animate-spin" />
+              )}
               Salvar
             </Button>
           </div>

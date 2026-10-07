@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Button from '../components/Button'
@@ -12,66 +11,91 @@ import {
 } from '../assets/icons'
 import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 const TaskDetailsPage = () => {
-  const { taskId } = useParams()
-  const [task, setTask] = useState()
+  const { data: task } = useQuery({
+    queryKey: 'taskDetail',
+    queryFn: async () => {
+      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+        method: 'GET',
+      })
+      const task = response.json()
+      return task
+    },
+  })
+
+  const { mutate } = useMutation({
+    mutationKey: 'taskDetailAtualizar',
+    mutationFn: async (updatedTask) => {
+      const response = await fetch(
+        `http://localhost:3000/tasks/${updatedTask.id}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify(updatedTask),
+        }
+      )
+      response.json()
+    },
+  })
+
+  const { mutate: mutateDelete } = useMutation({
+    mutationKey: 'taskDetailDeletar',
+    mutationFn: async () => {
+      const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
+        method: 'DELETE',
+      })
+      return response.json()
+    },
+  })
+
+  const { taskId } = useParams() //pego a id da tarefa pela url
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-    reset,
-  } = useForm()
-
-  console.log(isSubmitting)
+  } = useForm({
+    values: {
+      title: task?.title,
+      time: task?.time,
+      description: task?.description,
+    },
+  })
 
   const navigate = useNavigate()
   const handleBackClick = () => {
     navigate(-1)
   }
 
-  useEffect(() => {
-    const fetchTask = async () => {
-      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-        method: 'GET',
-      })
-      const data = await response.json()
-      setTask(data)
-      // reset aqui para trazer o valores default para os inputs
-      reset(data)
-    }
-    fetchTask()
-  }, [taskId, reset])
-  console.log(task)
-
   const handleSaveClick = async (data) => {
     //Chamo api aqui
-    const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        title: data.title.trim(),
-        time: data.time,
-        description: data.description.trim(),
-      }),
-    })
-    if (!response.ok) {
-      toast.error('Ocorreu um erro ao atualizar a tarefa.')
+    const updatedTask = {
+      ...task,
+      title: data.title.trim(),
+      time: data.time,
+      description: data.description.trim(),
     }
-    const newTask = await response.json()
-    setTask(newTask)
-    toast.success('Tarefa salva com sucesso')
+
+    mutate(updatedTask, {
+      onSuccess: () => {
+        toast.success('Tarefa atualizada com sucesso!')
+      },
+      onError: () => {
+        toast.error('Error ao atualizar a tarefa!')
+      },
+    })
   }
 
   const handleDeleteTask = async () => {
-    const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
-      method: 'DELETE',
+    mutateDelete(undefined, {
+      onSuccess: () => {
+        toast.success('Tarefa deletada com sucesso!')
+      },
+      onError: () => {
+        toast.error('Error ao deletar tarefa!')
+      },
     })
 
-    if (!response.ok) {
-      return toast.error('Error ao deletar tarefa')
-    }
-
-    toast.success('Tarefa deletada com sucesso')
     navigate(-1)
   }
 
