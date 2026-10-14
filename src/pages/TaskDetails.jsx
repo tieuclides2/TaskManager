@@ -11,10 +11,11 @@ import {
 } from '../assets/icons'
 import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useUpdateTask } from '../components/hooks/data/use-update-task'
+import { useDeleteTask } from '../components/hooks/data/use-delete-task'
+import { useGetTask } from '../components/hooks/data/use-get-task'
 
 const TaskDetailsPage = () => {
-  const queryClient = useQueryClient()
   const { taskId } = useParams()
   const navigate = useNavigate()
   const {
@@ -24,59 +25,15 @@ const TaskDetailsPage = () => {
     reset,
   } = useForm()
 
-  const { mutate: updateTask, isPending: updatedTaskIsLoading } = useMutation({
-    mutationKey: ['updateTask', taskId],
-    mutationFn: async (data) => {
-      //Chamo api aqui
-      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          title: data.title.trim(),
-          time: data.time,
-          description: data.description.trim(),
-        }),
-      })
-      if (!response.ok) {
-        throw new Error()
-      }
-      const updatedTask = await response.json()
-      queryClient.setQueryData('tasks', (oldTasks) => {
-        return oldTasks.map((oldTask) => {
-          if (oldTask.id === taskId) {
-            return updatedTask
-          }
-          return oldTask
-        })
-      })
-    },
-  })
+  const { mutate: updateTask, isPending: updatedTaskIsLoading } =
+    useUpdateTask(taskId)
 
-  const { mutate: deleteTask, isPending: deleteTaskIsLoading } = useMutation({
-    mutationKey: ['deleteTask', taskId],
-    mutationFn: async () => {
-      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-        method: 'DELETE',
-      })
-      if (!response.ok) {
-        throw new Error()
-      }
+  const { mutate: deleteTask, isPending: deleteTaskIsLoading } =
+    useDeleteTask(taskId)
 
-      const deletedTask = await response.json()
-      queryClient.setQueryData('tasks', (oldTasks) => {
-        return oldTasks.filter((oldTask) => oldTask.id !== deletedTask.id)
-      })
-    },
-  })
-
-  const { data: task } = useQuery({
-    queryKey: ['task', taskId],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-        method: 'GET',
-      })
-      const data = await response.json()
-      reset(data)
-    },
+  const { data: task } = useGetTask({
+    taskId,
+    onSuccess: reset,
   })
 
   const handleBackClick = () => {

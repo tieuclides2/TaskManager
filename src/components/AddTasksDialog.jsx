@@ -8,32 +8,15 @@ import './AddTaskDialog.css'
 import Button from './Button'
 import { useRef } from 'react'
 import TimeSelect from './TimeSelect'
-
 import { LoaderIcon } from '../assets/icons/index'
 import { v4 } from 'uuid'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { useAddTask } from './hooks/data/use-add-task'
 
 const AddTaskDialog = ({ isOpen, handleCloseDialog }) => {
-  const queryClient = useQueryClient()
-  const { mutate } = useMutation({
-    //Chamo api aqui
-    mutationKey: 'addTask',
-    mutationFn: async (task) => {
-      console.log(task)
-      const response = await fetch('http://localhost:3000/tasks', {
-        method: 'POST',
-        body: JSON.stringify(task),
-      })
+  const { mutate: addTask } = useAddTask()
 
-      if (!response.ok) {
-        throw new Error()
-      }
-
-      return response.json()
-    },
-  })
   const {
     register,
     formState: { errors, isSubmitting },
@@ -58,13 +41,9 @@ const AddTaskDialog = ({ isOpen, handleCloseDialog }) => {
       status: 'not_started',
     }
 
-    mutate(task, {
+    addTask(task, {
       onSuccess: () => {
-        // Funçao para adicionar uma tarefa
-        queryClient.setQueryData('tasks', (currentTasks) => {
-          // atualiza o cache da tarefa, segundo parametro da função é o que tenho no cache atualmente "currentTasks"
-          return [...currentTasks, task]
-        })
+        //e nesse onSucess altera/atualizo coisas em tela
         handleCloseDialog()
         reset({
           title: '',

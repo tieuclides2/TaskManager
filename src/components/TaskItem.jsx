@@ -11,28 +11,15 @@ import {
 import Button from '../components/Button'
 import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useDeleteTask } from './hooks/data/use-delete-task'
 
 const TaskItem = ({ task, handleCheckboxClick }) => {
-  const queryClient = useQueryClient()
-  //chamar api para deletar a tarefa
-  const { mutate, isPending } = useMutation({
-    mutationKey: 'deleteTask',
-    mutationFn: async () => {
-      const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
-        method: 'DELETE',
-      })
-      return response.json()
-    },
-  })
+  const { mutate: deleteTask, isPending } = useDeleteTask(task.id)
+
   //Deletar tarefa
   const handleDeleteClick = async () => {
-    mutate(undefined, {
+    deleteTask(undefined, {
       onSuccess: () => {
-        // atualiza o cache da tarefa, segundo parametro da função é o que tenho no cache atualmente "currentTasks"
-        queryClient.setQueryData('tasks', (oldTasks) => {
-          return oldTasks.filter((oldTask) => oldTask.id !== task.id)
-        })
         toast.success('Tarefa deletada com sucesso!')
       },
       onError: () => {
