@@ -12,7 +12,7 @@ import { LoaderIcon } from '../assets/icons/index'
 import { v4 } from 'uuid'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { useAddTask } from './hooks/data/use-add-task'
+import { useAddTask } from '../hooks/data/use-add-task'
 
 const AddTaskDialog = ({ isOpen, handleCloseDialog }) => {
   const { mutate: addTask } = useAddTask()

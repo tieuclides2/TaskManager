@@ -18,7 +18,7 @@ import TaskItem from './TaskItem'
 import { toast } from 'sonner'
 import AddTaskDialog from './AddTasksDialog'
 import { useQueryClient } from '@tanstack/react-query'
-import { useGetTasks } from './hooks/data/use-get-tasks'
+import { useGetTasks } from '../hooks/data/use-get-tasks'
 
 const Tasks = () => {
   const queryClient = useQueryClient()

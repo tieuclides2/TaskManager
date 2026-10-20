@@ -11,9 +11,9 @@ import {
 } from '../assets/icons'
 import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
-import { useUpdateTask } from '../components/hooks/data/use-update-task'
-import { useDeleteTask } from '../components/hooks/data/use-delete-task'
-import { useGetTask } from '../components/hooks/data/use-get-task'
+import { useUpdateTask } from '../hooks/data/use-update-task'
+import { useDeleteTask } from '../hooks/data/use-delete-task'
+import { useGetTask } from '../hooks/data/use-get-task'
 
 const TaskDetailsPage = () => {
   const { taskId } = useParams()

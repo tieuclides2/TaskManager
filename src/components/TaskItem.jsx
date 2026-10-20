@@ -11,7 +11,7 @@ import {
 import Button from '../components/Button'
 import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
-import { useDeleteTask } from './hooks/data/use-delete-task'
+import { useDeleteTask } from '../hooks/data/use-delete-task'
 
 const TaskItem = ({ task, handleCheckboxClick }) => {
   const { mutate: deleteTask, isPending } = useDeleteTask(task.id)
