@@ -1,31 +1,20 @@
-import Button from './Button'
-
 //Icons
-import {
-  AddIcon,
-  TrashIcon,
-  SunIcon,
-  CloudSunIcon,
-  MoonIcon,
-} from '../assets/icons/index'
-
-//hooks
-import { useState } from 'react'
+import { SunIcon, CloudSunIcon, MoonIcon } from '../assets/icons/index'
 
 //components
 import TasksSeparator from './TasksSeparator'
 import TaskItem from './TaskItem'
 import { toast } from 'sonner'
-import AddTaskDialog from './AddTasksDialog'
+
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetTasks } from '../hooks/data/use-get-tasks'
+import Header from './Header'
+import { taskQueriesKeys } from '../keys/queries'
 
 const Tasks = () => {
   const queryClient = useQueryClient()
   //custom hook
   const { data: tasks } = useGetTasks()
-
-  const [AddTaskDialogIsOpen, setAddTaskDialogIsOpen] = useState(false)
 
   const morningTasks = tasks?.filter((tasks) => tasks.time === 'morning')
   const afternoonTasks = tasks?.filter((tasks) => tasks.time === 'afternoon')
@@ -55,37 +44,12 @@ const Tasks = () => {
 
       return task
     })
-    queryClient.setQueryData('tasks', newTasks)
+    queryClient.setQueryData(taskQueriesKeys.getAll(), newTasks)
   }
 
   return (
     <div className="w-full space-y-6 px-8 py-16">
-      {/* Títulos e Botões */}
-      <div className="flex w-full justify-between">
-        <div>
-          <span className="text-xs font-semibold text-brand-primary">
-            Minhas tarefas
-          </span>
-          <h2 className="text-xl font-semibold">Minhas tarefas</h2>
-        </div>
-        {/* Botões */}
-        <div className="flex items-center gap-3">
-          <Button color="ghost">
-            Limpar Tarefa
-            <TrashIcon />
-          </Button>
-          <Button onClick={() => setAddTaskDialogIsOpen(true)}>
-            <AddIcon />
-            Nova Tarefa
-          </Button>
-
-          {/* modal de nova tarefa */}
-          <AddTaskDialog
-            isOpen={AddTaskDialogIsOpen}
-            handleCloseDialog={() => setAddTaskDialogIsOpen(false)}
-          />
-        </div>
-      </div>
+      <Header subTitle="Minhas Tarefas" title="Minhas Tarefas" />
 
       {/* LISTA DE TAREFAS */}
       <div className="rounded-xl bg-white p-6">
